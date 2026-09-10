@@ -71,8 +71,15 @@ class MainActivity : ComponentActivity() {
                                     viewModel.deleteTask(task)
                                     navController.popBackStack()
                                 },
-                                onEdit = { newTitle ->
-                                    viewModel.updateTask(task.copy(title = newTitle))
+                                onEdit = { newTitle, newDescription, newDueDate ->
+                                    viewModel.updateTask(
+                                        task.copy(
+                                            title = newTitle,
+                                            description = newDescription,
+                                            dueDate = newDueDate
+                                        )
+                                    )
+                                    navController.popBackStack()
                                 }
                             )
                         }

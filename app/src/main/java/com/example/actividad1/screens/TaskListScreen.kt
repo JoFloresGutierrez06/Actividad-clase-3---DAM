@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.example.actividad1.Task
@@ -98,20 +98,18 @@ fun TaskItem(
         )
     ) {
         Row(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Checkbox(
+            Switch(
                 checked = task.isCompleted,
                 onCheckedChange = onCompletedChange
             )
 
             Text(
                 text = task.title,
-                modifier = Modifier.padding(
-                    start = 12.dp,
-                    top = 12.dp
-                ),
+                modifier = Modifier.padding(start = 12.dp),
                 textDecoration = if (task.isCompleted) {
                     TextDecoration.LineThrough
                 } else {
