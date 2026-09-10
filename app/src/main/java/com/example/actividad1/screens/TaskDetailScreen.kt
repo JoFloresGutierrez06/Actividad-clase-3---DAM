@@ -75,7 +75,7 @@ fun TaskDetailScreen(
             )
 
             Text(
-                text = getTaskStatus(task.completed),
+                text = getTaskStatus(task.isCompleted),
                 modifier = Modifier.fillMaxWidth()
             )
 

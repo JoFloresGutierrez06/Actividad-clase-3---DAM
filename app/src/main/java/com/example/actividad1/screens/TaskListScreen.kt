@@ -90,7 +90,7 @@ fun TaskItem(
                 onTaskClick()
             },
         colors = CardDefaults.cardColors(
-            containerColor = if (task.completed) {
+            containerColor = if (task.isCompleted) {
                 Color(0xFFE8E8E8)
             } else {
                 Color.White
@@ -102,7 +102,7 @@ fun TaskItem(
         ) {
 
             Checkbox(
-                checked = task.completed,
+                checked = task.isCompleted,
                 onCheckedChange = onCompletedChange
             )
 
@@ -112,12 +112,12 @@ fun TaskItem(
                     start = 12.dp,
                     top = 12.dp
                 ),
-                textDecoration = if (task.completed) {
+                textDecoration = if (task.isCompleted) {
                     TextDecoration.LineThrough
                 } else {
                     TextDecoration.None
                 },
-                color = if (task.completed) {
+                color = if (task.isCompleted) {
                     Color.Gray.copy(alpha = 0.6f)
                 } else {
                     Color.Unspecified

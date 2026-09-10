@@ -4,15 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.actividad1.ui.theme.Actividad1Theme
-import com.example.actividad1.screens.TaskListScreen //Importar la otra pantalla
+import com.example.actividad1.screens.TaskListScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.actividad1.screens.TaskDetailScreen
 import com.example.actividad1.screens.CreateTaskScreen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
 
@@ -21,20 +23,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-
             Actividad1Theme {
 
                 val navController = rememberNavController()
-
-                val tasks = remember {
-                    mutableStateListOf(
-                        Task(1, "Comprar comida", false),
-                        Task(2, "Estudiar Kotlin", false),
-                        Task(3, "Hacer ejercicio", true),
-                        Task(4, "Comer yogurth", false),
-                        Task(5, "Entregar la Actividad 2", false)
-                    )
-                }
+                val viewModel: TaskViewModel = viewModel()
+                val tasks by viewModel.tasks.collectAsState()
 
                 NavHost(
                     navController = navController,
@@ -42,16 +35,10 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     composable("lista") {
-
                         TaskListScreen(
                             tasks = tasks,
                             onCompletedChange = { task, completed ->
-
-                                val index =
-                                    tasks.indexOfFirst { it.id == task.id }
-
-                                tasks[index] =
-                                    task.copy(completed = completed)
+                                viewModel.setCompleted(task, completed)
                             },
                             onTaskClick = { task ->
                                 navController.navigate("detalle/${task.id}")
@@ -63,61 +50,29 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("crear") {
-
                         CreateTaskScreen(
-                            onSave = { title ->
-
-                                val newId =
-                                    (tasks.maxOfOrNull { it.id } ?: 0) + 1
-
-                                tasks.add(
-                                    Task(
-                                        id = newId,
-                                        title = title,
-                                        completed = false
-                                    )
-                                )
-
+                            onSave = { title, description, dueDate ->
+                                viewModel.addTask(title, description, dueDate)
                                 navController.popBackStack()
                             },
-
-                            onBack = {
-                                navController.popBackStack()
-                            }
+                            onBack = { navController.popBackStack() }
                         )
                     }
 
                     composable("detalle/{id}") {
-
                         val id = it.arguments?.getString("id")?.toIntOrNull()
-
-                        val task = tasks.find { task ->
-                            task.id == id
-                        }
+                        val task = tasks.find { t -> t.id == id }
 
                         if (task != null) {
                             TaskDetailScreen(
                                 task = task,
-
-                                onBack = {
-                                    navController.popBackStack()
-                                },
-
+                                onBack = { navController.popBackStack() },
                                 onDelete = {
-
-                                    tasks.remove(task)
-
+                                    viewModel.deleteTask(task)
                                     navController.popBackStack()
                                 },
-
                                 onEdit = { newTitle ->
-                                    val index = tasks.indexOfFirst { it.id == task.id }
-
-                                    if (index != -1) {
-                                        tasks[index] = tasks[index].copy(
-                                            title = newTitle
-                                        )
-                                    }
+                                    viewModel.updateTask(task.copy(title = newTitle))
                                 }
                             )
                         }
