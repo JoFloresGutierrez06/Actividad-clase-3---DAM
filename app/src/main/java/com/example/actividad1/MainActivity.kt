@@ -43,6 +43,9 @@ class MainActivity : ComponentActivity() {
                             onTaskClick = { task ->
                                 navController.navigate("detalle/${task.id}")
                             },
+                            onDeleteTask = { task ->
+                                viewModel.deleteTask(task)
+                            },
                             onCreateTask = {
                                 navController.navigate("crear")
                             }
