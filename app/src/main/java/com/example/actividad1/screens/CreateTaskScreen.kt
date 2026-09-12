@@ -1,5 +1,10 @@
 package com.example.actividad1.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -90,9 +95,13 @@ fun CreateTaskScreen(
                 }
             )
 
-            errorMessage?.let {
+            AnimatedVisibility(
+                visible = errorMessage != null,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 Text(
-                    text = it,
+                    text = errorMessage ?: "",
                     color = androidx.compose.ui.graphics.Color.Red,
                     modifier = Modifier.padding(top = 8.dp)
                 )

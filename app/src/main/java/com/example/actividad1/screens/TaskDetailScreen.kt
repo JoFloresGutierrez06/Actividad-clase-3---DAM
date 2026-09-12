@@ -1,5 +1,6 @@
 package com.example.actividad1.screens
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -115,10 +116,12 @@ fun TaskDetailScreen(
                     .padding(top = 24.dp, bottom = 8.dp)
             )
 
-            Text(
-                text = getTaskStatus(task.isCompleted),
-                modifier = Modifier.fillMaxWidth()
-            )
+            Crossfade(targetState = task.isCompleted, label = "taskStatusCrossfade") { completed ->
+                Text(
+                    text = getTaskStatus(completed),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Button(
                 onClick = {
